@@ -1,0 +1,95 @@
+
+source muttrc.local
+
+set from = [email]
+set realname = "[name]" 
+set smtp_url = [smtp]
+
+set editor = vim
+set sort = threads
+set index_format="%4C %Z %{%Y-%m-%d %H:%M} %-25.25L (%?l?%4l&%4c?) %s"
+
+set query_command = "abook --mutt-query '%s'"
+macro index,pager A "<pipe-message>abook --add-email-quiet<return>"
+
+# Sidebar
+set sidebar_visible = yes
+set sidebar_width = 25
+set sidebar_divider_char = ' | '
+set mail_check_stats
+set sidebar_format = '%B%?F? [%F]?%* %?N?%N/?%S'
+set sidebar_sort_method = 'unsorted'
+#set sidebar_new_mail_only = yes
+set sidebar_non_empty_mailbox_only = yes
+
+#set sidebar_sort_method = 'count'
+set new_mail_command = "notify-send 'Neomutt: ' '%n new messages, %u unread.' &"
+
+
+bind index,pager B sidebar-toggle-visible
+bind index,pager <C-up> sidebar-prev
+bind index,pager <C-down> sidebar-next
+bind index,pager <C-right> sidebar-open
+
+macro pager \cb |urlview\n
+#macro index,pager <F2> ":toggle help<enter>:set ?help<enter>"  "toggle help status line"
+
+
+# Setting
+set pager_context=4
+set pager_index_lines=10
+set pager_stop
+#set display_filter = grep -v '^\[-- .* --\]$'
+
+
+# Binding
+bind  pager <backspace> previous-page
+bind  pager -           previous-line
+bind  pager \eOm        previous-line
+bind  pager +           next-line
+bind  pager \eOk        next-line
+bind  pager \eOM        next-line
+bind  pager \e[1~       top
+bind  pager \e[4~       bottom
+bind pager g noop
+bind pager G bottom
+bind pager gg top
+
+
+
+bind  index <backspace> previous-entry
+bind  index -           previous-entry
+bind  index \eOm        previous-entry
+bind  index +           next-entry
+bind  index \eOk        next-entry
+bind  index \eOM        display-message
+bind  index \e[H        first-entry
+bind  index \e[F        last-entry
+bind  index \e[1~       first-entry
+bind  index \e[4~       last-entry
+
+bind  alias   <space>   select-entry
+bind  alias   x         exit
+bind  attach  x         exit
+bind  browser x         exit
+
+# Show mail in simple html (without pictures)
+# You need to install links and an entry in .mailcap as following:
+# text/html;                      links %s; nametemplate=%s.html
+# text/html;                      links -dump %s; nametemplate=%s.html; copiousoutput
+auto_view text/html
+alternative_order text/plain text/enriched text/html
+
+
+set edit_headers =  yes
+
+# What headers to show
+ignore *
+unignore from: date subject to cc reply-to:
+unignore resent- x-resent User-Agent:
+
+# What order to show them
+unhdr_order *
+hdr_order Date: From: To: Reply-To: Cc: Subject:
+
+source color.muttrc
