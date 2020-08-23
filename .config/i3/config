@@ -1,0 +1,464 @@
+# i3 config file modified by schloss on 2020-08-23
+#
+# Please see https://i3wm.org/docs/userguide.html for a complete reference!
+
+set $mod Mod4
+
+######################################################
+#
+# The following additional tools are installed:
+# feh            - for background picture
+# rofi           - window switcher and app starter 
+# i3block        - exchange of i3status (bar)
+# xfce4-clipman  - TODO: find a other solution for a clipboard manager 
+# xautolock      - auto lock screen after inactivity
+# gsimplecal     - calendar drop down box 
+#                  config should be stored under: ~/.config/gsimplecal/config
+# compton        - composite to get transparent windows (install compto-conf for example conf file)
+# dunst          - lightweight notification daemons 
+#                  (copy /usr/share/dunst/dunstrc to ~/.config/dunst/dunstrc)
+# scrot          - screenshot tool (-s for click on window or create range with mouse)
+# xob            - overlay progress bar (https://github.com/florentc/xob/)
+#                  (zypper in xob) (~/.config/xob/styles.cf)
+# font           - mostly for i3bar symbole (zypper in fontawesome-fonts)
+######################################################
+
+
+# Autostart application on i3 start
+exec_always  bash ~/.config/i3/start-script.sh
+exec nm-applet
+exec nextcloud
+exec pasystray
+exec xfce4-clipman
+exec_always feh --bg-scale ~/Pictures/0010.jpg
+exec_always killall /usr/lib/xfce4/notifyd/xfce4-notifyd
+exec_always dunst
+exec compton
+
+# Start auto locking after 10 min
+exec xautolock -detectsleep -time 10 \
+-locker "i3lock -d -c 304000" -notify 30 \
+-notifier "notify-send -u critical -t 15000 -- 'LOCKING screen in 30 seconds'; play /usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"
+
+# Monitor Layout Home 
+exec_always xrandr --output eDP-1 --mode 1368x768 --pos 1920x0 \
+                   --output HDMI-1 --primary --mode 1920x1080 --pos 0x0 
+
+# Monitor Layout Single
+# exec_always xrandr --output eDP-1 --mode 1368x768 --pos 0x0
+
+# switch to workspace with urgent window automatically 
+for_window [urgent=latest] focus
+
+# Open terminal in workspace 02 on start 
+exec --no-startup-id i3-msg "workspace 02Term; exec terminator"
+
+# Border and title of each window
+for_window [class="^.*"] border pixel 2
+for_window [class="^.*"] title_format "<b>%instance</b>"
+
+# Only available on i3-gaps
+gaps inner 10 
+gaps outer 0 
+
+# Always open a xterm as a floating window
+for_window [class="XTerm"] floating enable
+
+# Open the audio control as a floating window
+for_window [class="Pavucontrol"] floating enable
+for_window [class="Pavucontrol"] resize set 800 600
+
+# Open feh always as a floating window
+for_window [class="feh"] floating enable
+for_window [class="feh"] resize set 800 600
+for_window [class="feh"] move position center
+
+
+# Open webcam app always as a floating window
+for_window [class="guvcview"] floating enable
+for_window [class="guvcview"] move position center
+for_window [class="Guvcview"] floating enable
+for_window [class="Guvcview"] move position center
+
+# Open Virt-Manager always as a floating window
+for_window [class="Virt-manager"] floating enable
+for_window [class="Virt-manager"] resize set 800 600
+for_window [class="Virt-manager"] move position center
+
+# Open xfce4-terminal always as a floating window
+for_window [class="Xfce4-terminal"] floating enable
+for_window [class="Xfce4-terminal"] resize set 1200 720
+for_window [class="Xfce4-terminal"] move position center
+
+#for_window [class="Xfce4-terminal"] move window to position 5 5
+
+
+# Open MS Teams always as a floating window
+## for_window [class="Microsoft*"] floating enable
+
+# switch to workspace with urgent window automatically
+for_window [urgent=latest] focus
+
+# Position of the calendar dropdown "Gsimplecal"
+for_window [class="Gsimplecal"] floating enable, move position mouse, move down 5 px
+
+# Key | Change resolution           | $mod+F8 
+bindsym $mod+F8 exec bash ~/.config/i3/resolution.sh
+
+# Key | CheatSheet of all bindsym   | $mod+Shift+h
+bindsym --release $mod+Shift+h exec grep '# Key |' $HOME/.config/i3/config |grep -v bindsym |dmenu -i -b -l 20
+
+# Key | Increase Volume             | $mod+KB_Add
+bindsym $mod+KP_Add exec --no-startup-id pactl set-sink-volume 0 +5% 
+
+# Key | Decrease Volume             | $mod+KB_Substract
+bindsym $mod+KP_Subtract exec --no-startup-id pactl set-sink-volume 0 -5% 
+
+# Key | Mute Volume                 | $mod+KB_Enter
+bindsym $mod+KP_Enter exec --no-startup-id pactl set-sink-mute 0 toggle 
+
+# Key | Increase Volume             | $mod+F12
+bindsym $mod+F12 exec --no-startup-id pactl set-sink-volume 0 +5% 
+
+# Key | Decrease Volume             | $mod+F10
+bindsym $mod+F11 exec --no-startup-id pactl set-sink-volume 0 -5% 
+
+# Key | Mute Volume                 | $mod+F10
+bindsym $mod+F10 exec --no-startup-id pactl set-sink-mute 0 toggle 
+
+# Key | Lock Screen                 | $mod+Ctrl+l
+bindsym $mod+Ctrl+l exec bash ~/.config/i3/myi3lock.sh
+
+# Key | restart i3                  | $mod+r
+bindsym $mod+Shift+r restart
+
+# Key | Switch through open windows | $mod+y  
+bindsym $mod+y exec rofi -show window 
+
+# Key | Open clipboard contex menue | Print
+bindsym Print exec xfce4-popup-clipman
+ 
+# Key | Open clipboard contex menue | $mod+p
+bindsym $mod+p exec xfce4-popup-clipman
+ 
+# Key | Focus tiling / floating     | $mod+space
+bindsym $mod+space focus mode_toggle
+
+# Key | Put window to scratchpad    | $mod+Shift+minus
+bindsym $mod+Shift+minus move scratchpad
+
+# Key | Shwo scratchpad window      | $mod+minus
+bindsym $mod+minus scratchpad show; move position center
+
+# Key | Open texpander              | Control+space
+bindsym Control+space exec bash ~/bin/texpander.sh
+
+# Color settings
+# class                 border  backgr. text    indicator child_border
+client.focused          #ff0000  #285577 #ffffff #2e9ef4  #ffffff
+client.focused_inactive #333333 #5f676a #ffffff #484e50   #5f676a
+client.unfocused        #333333 #222222 #888888 #292d2e   #222222
+client.urgent           #2f343a #900000 #ffffff #900000   #900000
+client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+client.background       #ffffff
+
+
+# Font for window titles. Will also be used by the bar unless a different font
+# is used in the bar {} block below.
+# font pango:monospace 12
+font pango:monospace 10, FontAwesome 10
+
+
+# This font is widely installed, provides lots of unicode glyphs, right-to-left
+# text rendering and scalability on retina/hidpi displays (thanks to pango).
+#font pango:DejaVu Sans Mono 8
+
+# Key | Mouse+$mod to drag windows  | mouse+$mod
+floating_modifier $mod
+
+# Key | Start a terminal            | $mod+Return
+bindsym $mod+Return exec i3-sensible-terminal
+#bindsym $mod+Return exec sakura
+
+# Key | Exit application            | $mod+Shift+q
+bindsym $mod+Shift+q kill
+
+# Key | Make a screenshot           | Control+Print
+bindsym --release Control+Print exec scrot -s %Y-%m-%d-%s.jpg -e 'mv $f ~/Pictures/ && feh ~/Pictures/$f'  
+
+# Key | Make a screenshot (altern.) | Control+Print
+bindsym --release $mod+Shift+p exec scrot -s %Y-%m-%d-%s.jpg -e 'mv $f ~/Pictures/ && feh ~/Pictures/$f'  
+
+# Key | Start application menu      | $mod+d
+bindsym $mod+d exec rofi -show run -opacity "70"
+
+# Key | Change focus to next window | $mod+Left
+bindsym $mod+Left focus left
+# Key | Change focus to next window | $mod+Down
+bindsym $mod+Down focus down
+# Key | Change focus to next window | $mod+Up
+bindsym $mod+Up focus up
+# Key | Change focus to next window | $mod+right
+bindsym $mod+Right focus right
+
+# Key | Move focused window         | $mod+Shift+Left 
+bindsym $mod+Shift+Left move left
+# Key | Move focused window         | $mod+Shift+Down 
+bindsym $mod+Shift+Down move down
+# Key | Move focused window         | $mod+Shift+Up 
+bindsym $mod+Shift+Up move up
+# Key | Move focused window         | $mod+Shift+right
+bindsym $mod+Shift+Right move right
+
+# Key | Split next app horizontal   | $mod+h
+bindsym $mod+h split h
+
+# Key | Split next app vertically   | $mod+h
+bindsym $mod+v split v
+
+# Key | Toggle fullscreen mode      | $mod+f
+bindsym $mod+f fullscreen toggle
+
+# Key | Switch to tabbed windows    | $mod+w
+bindsym $mod+w layout tabbed
+
+# Key | Toggle to /vert/horiz       | $mod+w
+bindsym $mod+e layout toggle split
+
+# Key | Switch to next workspace    | $mod+Tab
+bindsym $mod+Tab workspace next 
+
+# Key | Switch to prev workspace    | $mod+Shift+Tab
+bindsym $mod+Shift+Tab workspace prev
+
+# Key | MV worksp. to monitor left  |
+bindsym $mod+l move workspace to output left
+# Key | MV worksp. to monitor right |
+bindsym $mod+k move workspace to output right
+
+# Key | resize shrink width         | Left
+bindsym Control+$mod+Left resize shrink width 2 px or 2 ppt
+# Key | resize grow height          | Down
+bindsym Control+$mod+Down resize grow height 2 px or 2 ppt
+# Key | resize shrink height        | Up
+bindsym Control+$mod+Up resize shrink height 2 px or 2 ppt
+# Key | resize grow width           | Right
+bindsym Control+$mod+Right resize grow width 2 px or 2 ppt
+
+
+# resize window (you can also use the mouse for that)
+# Key | Switch to $mode_resize ---> | $mod+r     
+bindsym $mod+c floating toggle ; mode "$mode_floating"
+set $mode_floating [c] toggle floating | move with curser
+mode "$mode_floating" {
+
+        # Key | Toggle floating, tiling     | c
+        bindsym c floating toggle
+
+        # Move windows
+        # Key | move left                   | $mod+Left
+        bindsym Left move left 10 px
+        # Key | move right                  | $mod+Right
+        bindsym Right move right 10 px
+        # Key | move down                   | $mod+Down
+        bindsym Down move down 10 px
+        # Key | move up                     | $mod+U
+        bindsym Up move up 10 px
+
+        # Key | back to normal mode         | Return, Escape, $mod+r, q
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+c mode "default"
+        bindsym q mode "default"
+}
+
+
+# Key | Switch to $mode_system ---> | $mod+s
+bindsym $mod+s mode "$mode_system"
+set $mode_system [cC]omton [vV]PN [s]uspend [e]Logout [g]aps Sc[r]een VNC[t]wix
+mode "$mode_system" {
+        # Key | System suspend              | s
+        bindsym s exec systemctl suspend -i ; mode "default"
+        # Key | Logout from WindowManager   | e
+        bindsym e exec "i3-nagbar -t warning -m 'Do you really want to exit i3?' -b 'Yes, exit i3' 'i3-msg exit'" 
+        # Key | Start transparency mode     | c
+        bindsym c exec compton; mode "default"
+        # Key | Stop transparency mode      | Shift+c
+        bindsym Shift+c exec killall compton; mode "default"
+        # Key | Start openVPN               | v 
+        bindsym v exec sudo systemctl start openvpn@NEW ;  mode "default"
+        # Key | Stop openVPN                | Shift+v
+        bindsym Shift+v exec sudo systemctl stop openvpn@NEW ;  mode "default"
+        # Key | Switch to $mode_gaps        | g
+        bindsym g mode "$mode_gaps"  
+        # Key | Overall Monitor setting     | r
+        bindsym r exec bash ~/.config/i3/resolution.sh ; mode "default"
+
+       # Key | back to normal mode          | Return, Escape, $mod+s, q
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+s mode "default"
+        bindsym q mode "default"
+}
+
+# Key | Switch to $mode_gaps --->   | i$mod+g
+bindsym $mod+g mode "$mode_gaps"
+set $mode_gaps Gaps: (+/-)outer (Shift +/-)inner
+mode "$mode_gaps" {
+        # Key | Set inner gaps to Zero      | i
+        bindsym i gaps inner current set 0
+        # Key | Set outer gaps to Zero      | o
+        bindsym o gaps outer current set 0
+        # Key | increase outer gaps         | Up 
+        bindsym Up  gaps outer current plus 2
+        # Key | decrease outer gaps         | Down
+        bindsym Down gaps outer current minus 2
+        # Key | increase inner gaps         | $mod+Up
+        bindsym $mod+Up  gaps inner current plus 2
+        # Key | decrease inner gaps         | $mod+Down
+        bindsym $mod+Down gaps inner current minus 2
+
+        # Key | Back to normal mode         | Return, Escape, $mod+g, q 
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym g mode "default"
+        bindsym q mode "default"
+}
+
+
+
+# Starting launcher mode 
+# Key | Switch to $mode_launcher --->   | $mod+a
+bindsym $mod+a mode "$mode_launcher"
+set $mode_launcher [p]ulsaudio [f]irefox [g]Chrome [r]rocketchat [t]hunderbird T[e]ams
+mode "$mode_launcher" {
+       # Key | Start firefox in $ws3        | f
+       bindsym f exec firefox ; mode "default" ; workspace $ws3
+       # Key | Start Chrome in $ws4         | g 
+       bindsym g exec google-chrome ; mode "default" ; workspace $ws4
+       # Key | Start Thunderbird in $ws1    | t
+       bindsym t exec thunderbird ; mode "default" ; workspace $ws1
+       # Key | Start Audio Controll         | p
+       bindsym p exec pavucontrol ; mode "default"
+       # Key | Start RocketChat in  $ws10   | r
+       bindsym r exec rocketchat-desktop ; mode "default" ; workspace $ws10
+       # Key | Start MS Teams in $ws07      | e
+       bindsym e exec teams ; mode "default" ; workspace $ws07
+
+
+
+    # Key | Back to normal mode         | Return, Escape, $mod+a, q 
+    bindsym $mod+a mode "default"
+    bindsym Escape mode "default"
+    bindsym Return mode "default"
+    bindsym q mode "default"
+
+}
+
+# Start an additional Xserver
+# By using an other mode all default key bindings are disabled
+# Therefore all keys can  be used for the new XServer (exept $mod+q)
+ 
+# Key | Switch to $xphyr_launch --->| $mod+x
+bindsym $mod+x exec bash ~/.config/i3/xephyr.sh ; mode "$xphyr_launcher"
+set $xphyr_launcher Launch spectrwm
+mode "$xphyr_launcher" {
+    # Key | Back to normal mode         | $mod+q
+    bindsym $mod+q mode "default"
+}
+
+
+# Define names for default workspaces for which we configure key bindings later on.
+# We use variables to avoid repeating the names in multiple places.
+set $ws1 "01Mail"
+set $ws2 "02Term"
+set $ws3 "03Fire"
+set $ws4 "04Chro"
+set $ws5 "05Thun"
+set $ws6 "06Edit"
+set $ws7 "07Team"
+set $ws8 "08Surf"
+set $ws9 "09    "
+set $ws10 "10Rock"
+
+# switch to workspace
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+bindsym $mod+0 workspace $ws10
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
+bindsym $mod+Shift+0 move container to workspace $ws10
+
+
+# Use the app xprop ans search for the line e.g.:
+# WM_CLASS(STRING) = "rocket.chat", "Rocket.Chat"
+# Use the secound string
+
+assign [class="Thunderbird"] $ws1
+assign [class="Firefox"] $ws3
+assign [class="Google-chrome"] $ws4
+assign [class="Thunar"] $ws5
+assign [class="Gedit"] $ws6
+assign [class="Vimb"] $ws8
+assign [class="Microsoft Teams*"] $ws7
+assign [class="Xephyr"] $ws9
+assign [class="Vncviewer"] $ws9
+
+
+# Home confguration 
+# xrandr --listmonitors
+# Monitors: 2
+# 0: +*DP-1-1 1920/598x1080/336+0+0  DP-1-1
+# 1: +eDP-1 1368/309x768/173+1920+0  eDP-1
+workspace $ws10 output eDP-1
+
+
+
+
+# Start i3bar to display a workspace bar (plus the system information i3status
+# finds out, if available)
+bar {
+        status_command i3blocks -c ~/.config/i3/i3blocks.conf
+        position top
+        workspace_buttons no
+        tray_output none
+        colors {
+          background #282a36
+          #                  border   bg      text
+          focused_workspace  #FFFF00  #000000 #FFFFFF 
+          inactive_workspace #A4A4A4  #0B2161 #A4A4A4
+          urgent_workspace   #A4A4A4  #000000 #A4A4A4
+        }
+
+}
+
+bar {
+    workspace_buttons yes
+    position bottom
+    font pango:monospace 10
+
+    colors {
+      background #282a36
+      #                  border   bg      text
+      focused_workspace  #fbfcfc  #000000 #aed6f1
+      inactive_workspace #A4A4A4  #000000 #A4A4A4
+      urgent_workspace   #f4d03f  #000000 #aed6f1
+    }
+}
+
